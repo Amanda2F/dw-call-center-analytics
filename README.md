@@ -11,7 +11,7 @@ Este projeto foi desenvolvido para endereçar problemas críticos de operação 
 O modelo dimensional é composto por **4 Dimensões** e **2 Tabelas Fato**, garantindo isolamento semântico e alta performance para consultas analíticas.
 
 ### Diagrama Entidade-Relacionamento (DER)
-![DER do Projeto](./DER%20-%20PROJETO%20MONITORAMENTO.jpg)
+![DER do Projeto](./DER%20-%20PROJETO%20MONITORAMENTO.png)
 
 ### Estrutura das Tabelas
 * **Dimensões:**
