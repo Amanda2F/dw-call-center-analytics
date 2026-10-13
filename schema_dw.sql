@@ -2,8 +2,6 @@
 -- PostgreSQL database dump
 --
 
-\restrict IexlMi7UvaZUeyXkqTbuZUqXj3XkhkVZbXfM5YTAf7uejrBQbAXiPYD67vmG2by
-
 -- Dumped from database version 18.4
 -- Dumped by pg_dump version 18.4
 
@@ -25,8 +23,6 @@ SET row_security = off;
 -- TOC entry 4 (class 2615 OID 2200)
 -- Name: public; Type: SCHEMA; Schema: -; Owner: -
 --
-
-CREATE SCHEMA public;
 
 
 --
@@ -84,7 +80,6 @@ ALTER SEQUENCE public.dim_agente_id_agente_seq OWNED BY public.dim_agente.id_age
 CREATE TABLE public.dim_caracteristicas (
     id_caracteristicas integer NOT NULL,
     lista_id integer NOT NULL,
-    lista_nome character varying(255) NOT NULL,
     qualificacao character varying(50) NOT NULL,
     comportamento character varying(50) NOT NULL
 );
@@ -204,7 +199,6 @@ CREATE TABLE public.fato_ligacoes (
     tipo_ligacao character varying(25),
     tempo_falado_seg integer NOT NULL,
     finalizado_agente boolean,
-    lead_queimado boolean DEFAULT false NOT NULL,
     audio_url text
 );
 
@@ -245,7 +239,8 @@ CREATE TABLE public.fato_produtividade_agente (
     tempo_em_ligacao_seg integer,
     qtd_ligacoes_diario smallint,
     tempo_logado_seg integer,
-    tpa_seg integer
+    tpa_seg integer,
+    qtd_leads_queimados smallint
 );
 
 
@@ -523,6 +518,3 @@ COMMENT ON CONSTRAINT fk_fato_produtividade_agente_dim_tempo ON public.fato_prod
 --
 -- PostgreSQL database dump complete
 --
-
-\unrestrict IexlMi7UvaZUeyXkqTbuZUqXj3XkhkVZbXfM5YTAf7uejrBQbAXiPYD67vmG2by
-
