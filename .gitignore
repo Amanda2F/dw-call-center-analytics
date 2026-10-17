@@ -1,2 +1,3 @@
 # Ignorar arquivos de dados locais
 *.csv
+*.env
