@@ -8,6 +8,9 @@
 --   * dim_tempo usa id_data no formato YYYYMMDD (ex.: 20260812), sem SERIAL.
 --   * As chaves naturais têm UNIQUE para que o merge/JOIN da carga
 --     nunca duplique linhas da fato.
+--   * fato_ligacoes.codigo_chamada é o código único da ligação, extraído
+--     da audio_url. O identificador do cliente do relatório NÃO é guardado:
+--     só um HMAC dele (cliente_hash), que permite contar contatos por cliente.
 -- =====================================================================
 
 
@@ -61,7 +64,8 @@ CREATE TABLE fato_ligacoes (
     id_agente           INT          NOT NULL,
     id_filial           INT          NOT NULL,
     id_caracteristicas  INT          NOT NULL,
-    id_chamada_origem   VARCHAR(64)  NOT NULL,
+    codigo_chamada      VARCHAR(64)  NOT NULL,  -- código único da ligação (vem da audio_url)
+    cliente_hash        CHAR(64),               -- HMAC do identificador do cliente; NULL se não houver
     data_hora           TIMESTAMP    NOT NULL,
     tipo_telefone       VARCHAR(10),
     tipo_ligacao        VARCHAR(25),
@@ -69,7 +73,7 @@ CREATE TABLE fato_ligacoes (
     finalizado_agente   BOOLEAN,
     audio_url           TEXT,
     CONSTRAINT pk_fato_ligacoes PRIMARY KEY (id_ligacoes),
-    CONSTRAINT unq_fato_ligacoes UNIQUE (id_chamada_origem),
+    CONSTRAINT unq_fato_ligacoes UNIQUE (codigo_chamada),
     CONSTRAINT fk_fato_ligacoes_dim_tempo
         FOREIGN KEY (id_data) REFERENCES dim_tempo (id_data),
     CONSTRAINT fk_fato_ligacoes_dim_agente
@@ -102,14 +106,16 @@ CREATE TABLE fato_produtividade_agente (
 
 
 -- ---------------------------------------------------------------------
--- 3. ÍNDICES NAS FKs (o Postgres não cria índice automático para FK)
---    Os índices de dim_* e das UNIQUE já existem por causa das constraints.
+-- 3. ÍNDICES NAS FKs e no cliente_hash
+--    (o Postgres não cria índice automático para FK; os índices das
+--    UNIQUE e PKs já existem por causa das constraints)
 -- ---------------------------------------------------------------------
 
-CREATE INDEX idx_fato_ligacoes_id_data           ON fato_ligacoes (id_data);
-CREATE INDEX idx_fato_ligacoes_id_agente         ON fato_ligacoes (id_agente);
-CREATE INDEX idx_fato_ligacoes_id_filial         ON fato_ligacoes (id_filial);
+CREATE INDEX idx_fato_ligacoes_id_data            ON fato_ligacoes (id_data);
+CREATE INDEX idx_fato_ligacoes_id_agente          ON fato_ligacoes (id_agente);
+CREATE INDEX idx_fato_ligacoes_id_filial          ON fato_ligacoes (id_filial);
 CREATE INDEX idx_fato_ligacoes_id_caracteristicas ON fato_ligacoes (id_caracteristicas);
+CREATE INDEX idx_fato_ligacoes_cliente_hash       ON fato_ligacoes (cliente_hash);
 
 
 -- ---------------------------------------------------------------------
